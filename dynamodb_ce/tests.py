@@ -9,10 +9,6 @@ class TestUnit(object):
     lexer = CeLexer()
     parser = CeParser()
 
-    def __init__(self):
-        self.lexer = lexer
-        self.parser = parser
-
     def getResult(self, expr, result):
         stack = inspect.stack()[2][4][0]
         testUnit = stack.split('.')[0]
@@ -156,10 +152,9 @@ class notEqual(TestUnit):
 class between(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        super(TestUnit, self).__init__()
-        self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3]}}
         self.parser._expression_attribute_names = {"#path": "body"}
         self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}}
+        self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3]}}
         self.expressions = [
             "#path.numberList[1] BETWEEN #path.numberList[0] AND #path.numberList[2]", # CASE: int(path) BETWEEN int(path) AND int(path)
             "#path.numberList[1] BETWEEN #path.numberList[0] AND :number3", # CASE: int(path) BETWEEN int(path) AND int(value)
