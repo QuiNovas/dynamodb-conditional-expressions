@@ -174,6 +174,102 @@ class between(TestUnit):
             ":number2 BETWEEN :number1 AND #path.numberList[2]", # CASE: int(value) BETWEEN int(value) AND int(path)
         ]
 
+class inList(TestUnit):
+    def __init__(self):
+        print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
+        self.parser._expression_attribute_names = {"#path": "body"}
+        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}}
+        self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3]}}
+        self.expressions = [
+            "#path.string1 IN (:string2, :string1, :string3)"
+        ]
+
+class attribute_exists(TestUnit):
+    def __init__(self):
+        print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
+        self.parser._expression_attribute_names = {"#path": "body"}
+        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, "map": {"M": {"mapkey": "mapval"}}}
+        self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3], "map": {"mapkey": "mapvalue"}}}
+        self.expressions = [
+            "attribute_exists(#path.string1)",
+            "attribute_exists(#path.number1)",
+            "attribute_exists(#path.numberList[0])",
+            "attribute_exists(#path.map.mapkey5)"
+        ]
+
+class attribute_not_exists(TestUnit):
+    def __init__(self):
+        print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
+        self.parser._expression_attribute_names = {"#path": "body"}
+        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, "map": {"M": {"mapkey": "mapval"}}}
+        self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3], "map": {"mapkey": "mapvalue"}}}
+        self.expressions = [
+            "attribute_not_exists(#path.number1)",
+        ]
+
+class attribute_type(TestUnit):
+    def __init__(self):
+        print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
+        self.parser._expression_attribute_names = {"#path": "body"}
+        self.parser._expression_attribute_values = {
+                                                    	':string1': {
+                                                    		'S': "a"
+                                                    	},
+                                                    	':string2': {
+                                                    		'S': "b"
+                                                    	},
+                                                    	':string3': {
+                                                    		'S': "c"
+                                                    	},
+                                                    	':number1': {
+                                                    		'N': 1
+                                                    	},
+                                                    	':number2': {
+                                                    		'N': 2
+                                                    	},
+                                                    	':number3': {
+                                                    		'N': 3
+                                                    	},
+                                                        ':stringType': {
+                                                            'S': 'S'
+                                                        },
+                                                        ':numberType': {
+                                                            'S': 'N'
+                                                        },
+                                                        ':mapType': {
+                                                            'S': 'M'
+                                                        },
+                                                        ":listType": {
+                                                            'S': 'L'
+                                                        },
+                                                    	"map": {
+                                                    		"M": {
+                                                    			"mapkey": "mapval"
+                                                    		}
+                                                    	}
+                                                    }
+        self.message = {
+                        	"body": {
+                        		"number1": 1,
+                        		"number2": 2,
+                        		"number3": 3,
+                        		"string1": "a",
+                        		"string2": "b",
+                        		"string3": "c",
+                        		"numberList": [1, 2, 3],
+                        		"map": {
+                        			"mapkey": "mapvalue"
+                        		}
+                        	}
+                        }
+        self.expressions = [
+            "attribute_type( #path.string1, :stringType )",
+            "attribute_type( #path.number1, :numberType )",
+            "attribute_type( #path.map, :mapType )",
+            "attribute_type( #path.numberList, :listType )",
+        ]
+
+"""
 test = greaterThan()
 test.run()
 
@@ -193,4 +289,17 @@ test = notEqual()
 test.run()
 
 test = between()
+test.run()
+
+test = inList()
+test.run()
+
+test = attribute_exists()
+test.run()
+
+test = attribute_not_exists()
+test.run()
+
+"""
+test = attribute_type()
 test.run()
