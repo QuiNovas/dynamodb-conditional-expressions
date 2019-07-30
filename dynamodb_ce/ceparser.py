@@ -1,6 +1,6 @@
 __all__ = ['CeParser']
 from boto3.dynamodb.types import TypeSerializer, TypeDeserializer
-from .celexer import CeLexer
+from celexer import CeLexer
 from sly import Parser
 from decimal import *
 _TYPE_DESERIALIZER = TypeDeserializer()
