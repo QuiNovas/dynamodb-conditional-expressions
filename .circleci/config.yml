@@ -7,8 +7,8 @@ jobs:
       - checkout
       - run: sudo apt-get -y install pandoc
       - run: sudo pip install pypandoc boto3 sly
-      - run: python dynamodb_ce/tests/runtest.py --exit-on-error
       - run: python setup.py sdist bdist_wheel
+      - run: python dynamodb_ce/tests/runtest.py --exit-on-error
       - persist_to_workspace:
           root: dist
           paths:
