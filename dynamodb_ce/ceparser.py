@@ -1,5 +1,4 @@
 __all__ = ['CeParser']
-
 from boto3.dynamodb.types import TypeSerializer, TypeDeserializer
 from celexer import CeLexer
 from sly import Parser
@@ -69,40 +68,46 @@ class CeParser(Parser):
     return _TYPE_DESERIALIZER.deserialize(value) if value else None
 
   # Grammar rules and actions
-  @_('operand EQ operand')
+  @_('operand EQ operand',
+    'function EQ operand')
   def condition(self, p):
-    operand0 = p.operand0
-    operand1 = p.operand1
+    operand0 = p[0]
+    operand1 = p[2]
     return lambda m: operand0(m) == operand1(m)
 
-  @_('operand NE operand')
+  @_('operand NE operand',
+    'function NE operand')
   def condition(self, p):
-    operand0 = p.operand0
-    operand1 = p.operand1
+    operand0 = p[0]
+    operand1 = p[2]
     return lambda m: operand0(m) != operand1(m)
 
-  @_('operand GT operand')
+  @_('operand GT operand',
+    'function GT operand')
   def condition(self, p):
-    operand0 = p.operand0
-    operand1 = p.operand1
+    operand0 = p[0]
+    operand1 = p[2]
     return lambda m: operand0(m) > operand1(m)
 
-  @_('operand GTE operand')
+  @_('operand GTE operand',
+    'function GTE operand')
   def condition(self, p):
-    operand0 = p.operand0
-    operand1 = p.operand1
+    operand0 = p[0]
+    operand1 = p[2]
     return lambda m: operand0(m) >= operand1(m)
 
-  @_('operand LT operand')
+  @_('operand LT operand',
+    'function LT operand')
   def condition(self, p):
-    operand0 = p.operand0
-    operand1 = p.operand1
+    operand0 = p[0]
+    operand1 = p[2]
     return lambda m: operand0(m) < operand1(m)
 
-  @_('operand LTE operand')
+  @_('operand LTE operand',
+    'function LTE operand')
   def condition(self, p):
-    operand0 = p.operand0
-    operand1 = p.operand1
+    operand0 = p[0]
+    operand1 = p[2]
     return lambda m: operand0(m) <= operand1(m)
 
   @_('operand BETWEEN operand AND operand')
@@ -176,7 +181,7 @@ class CeParser(Parser):
   @_('SIZE "(" path ")"')
   def function(self, p):
     path = p.path
-    return lambda m: len(path(m)) if isinstance(path(m), (str, set, dict, bytearray, bytes)) else -1
+    return lambda m: len(path(m)) if isinstance(path(m), (str, set, dict, bytearray, bytes, list)) else -1
 
   @_('in_list "," operand')
   def in_list(self, p):
