@@ -2,7 +2,7 @@ __all__ = ['CeParser']
 from boto3.dynamodb.types import TypeSerializer, TypeDeserializer
 from celexer import CeLexer
 from sly import Parser
-
+from decimal import *
 _TYPE_DESERIALIZER = TypeDeserializer()
 _TYPE_SERIALIZER = TypeSerializer()
 
@@ -59,7 +59,7 @@ class CeParser(Parser):
   precendence = (
     ('left', OR),
     ('left', AND),
-    ('right', NOT)
+    ('right', NOT),
   )
 
   # Internal helper to deference attribute values
@@ -68,76 +68,52 @@ class CeParser(Parser):
     return _TYPE_DESERIALIZER.deserialize(value) if value else None
 
   # Grammar rules and actions
-  @_('operand EQ operand',
-    'function EQ operand',
-    'function EQ function',
-    'operand EQ function')
+  @_('operand EQ operand')
   def condition(self, p):
-    operand0 = p[0]
-    operand1 = p[2]
+    operand0 = p.operand0
+    operand1 = p.operand1
     return lambda m: operand0(m) == operand1(m)
 
-  @_('operand NE operand',
-    'function NE operand',
-    'function NE function',
-    'operand NE function')
+  @_('operand NE operand')
   def condition(self, p):
-    operand0 = p[0]
-    operand1 = p[2]
+    operand0 = p.operand0
+    operand1 = p.operand1
     return lambda m: operand0(m) != operand1(m)
 
-  @_('operand GT operand',
-    'function GT operand',
-    'function GT function',
-    'operand GT function')
+  @_('operand GT operand')
   def condition(self, p):
-    operand0 = p[0]
-    operand1 = p[2]
+    operand0 = p.operand0
+    operand1 = p.operand1
     return lambda m: operand0(m) > operand1(m)
 
-  @_('operand GTE operand',
-    'function GTE operand',
-    'function GTE function',
-    'operand GTE function')
+  @_('operand GTE operand')
   def condition(self, p):
-    operand0 = p[0]
-    operand1 = p[2]
+    operand0 = p.operand0
+    operand1 = p.operand1
     return lambda m: operand0(m) >= operand1(m)
 
-  @_('operand LT operand',
-    'function LT operand',
-    'function LT function',
-    'operand LT function')
+  @_('operand LT operand')
   def condition(self, p):
-    operand0 = p[0]
-    operand1 = p[2]
+    operand0 = p.operand0
+    operand1 = p.operand1
     return lambda m: operand0(m) < operand1(m)
 
-  @_('operand LTE operand',
-    'function LTE operand',
-    'function LTE function',
-    'operand LTE function')
+  @_('operand LTE operand')
   def condition(self, p):
-    operand0 = p[0]
-    operand1 = p[2]
+    operand0 = p.operand0
+    operand1 = p.operand1
     return lambda m: operand0(m) <= operand1(m)
 
-  @_('operand BETWEEN operand AND operand',
-    'operand BETWEEN operand AND function',
-    'operand BETWEEN function AND function',
-    'operand BETWEEN function AND operand',
-    'function BETWEEN operand AND operand',
-    'function BETWEEN operand AND function',
-    'function BETWEEN function AND function',
-    'function BETWEEN function AND operand')
+  @_('operand BETWEEN operand AND operand')
   def condition(self, p):
-    operand0 = p[0]
-    operand1 = p[2]
-    operand2 = p[4]
+    operand0 = p.operand0
+    operand1 = p.operand1
+    operand2 = p.operand2
+#    return lambda m: print(type(operand0(m)))
+#    return lambda m: operand1(m) <= operand0(m) <= operand2(m)
     return lambda m: operand1(m) <= operand0(m) <= operand2(m)
 
-  @_('operand IN "(" in_list ")"',
-    'function IN "(" in_list ")"')
+  @_('operand IN "(" in_list ")"')
   def condition(self, p):
     operand = p.operand
     in_list = p.in_list
@@ -199,21 +175,17 @@ class CeParser(Parser):
     return lambda m: operand(m) in path(m) if isinstance(path(m), (str, set)) else False
 
   @_('SIZE "(" path ")"')
-  def function(self, p):
+  def operand(self, p):
     path = p.path
-    return lambda m: len(path(m)) if isinstance(path(m), (str, set, dict, bytearray, bytes, list)) else -1
+    return lambda m: len(path(m)) if isinstance(path(m), (str, set, dict, bytearray, bytes)) else -1
 
-  @_('in_list "," operand',
-    'in_list "," function')
+  @_('in_list "," operand')
   def in_list(self, p):
     in_list = p.in_list
     operand = p.operand
     return lambda m: [*in_list(m), operand(m)]
 
-  @_('operand "," operand',
-    'function "," function',
-    'function "," operand',
-    'operand "," function')
+  @_('operand "," operand')
   def in_list(self, p):
     operand0 = p.operand0
     operand1 = p.operand1
