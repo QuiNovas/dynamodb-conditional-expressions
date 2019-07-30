@@ -187,24 +187,25 @@ class inList(TestUnit):
 class attribute_exists(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        self.parser._expression_attribute_names = {"#path": "body"}
+        self.parser._expression_attribute_names = {"#path": "body", "#string": "string1"}
         self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, "map": {"M": {"mapkey": "mapval"}}}
         self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3], "map": {"mapkey": "mapvalue"}}}
         self.expressions = [
             "attribute_exists(#path.string1)",
             "attribute_exists(#path.number1)",
             "attribute_exists(#path.numberList[0])",
-            "attribute_exists(#path.map.mapkey5)"
+            "attribute_exists(#path.map.mapkey)",
+            "attribute_exists(#path.#string)"
         ]
 
 class attribute_not_exists(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        self.parser._expression_attribute_names = {"#path": "body"}
+        self.parser._expression_attribute_names = {"#path": "body", "#notThere": "not_there"}
         self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, "map": {"M": {"mapkey": "mapval"}}}
         self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3], "map": {"mapkey": "mapvalue"}}}
         self.expressions = [
-            "attribute_not_exists(#path.number1)",
+            "attribute_not_exists(#path.#notThere)"
         ]
 
 class attribute_type(TestUnit):
@@ -269,7 +270,6 @@ class attribute_type(TestUnit):
             "attribute_type( #path.numberList, :listType )",
         ]
 
-"""
 test = greaterThan()
 test.run()
 
@@ -290,16 +290,15 @@ test.run()
 
 test = between()
 test.run()
-"""
+
 test = inList()
 test.run()
-"""
+
 test = attribute_exists()
 test.run()
 
 test = attribute_not_exists()
 test.run()
 
-"""
 test = attribute_type()
 test.run()
