@@ -12,7 +12,7 @@ jobs:
       - persist_to_workspace:
           root: dist
           paths:
-            - dynamodb-conditional-expressions*
+            - dynamodb-ce*
   upload:
     docker:
       - image: circleci/python:3.7
