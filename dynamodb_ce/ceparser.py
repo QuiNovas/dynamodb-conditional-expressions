@@ -60,7 +60,7 @@ class CeParser(Parser):
     ('left', OR),
     ('left', AND),
     ('right', NOT),
-  )
+ )
 
   # Internal helper to deference attribute values
   def _get_expression_attribute_value(self, value_name):
@@ -109,8 +109,6 @@ class CeParser(Parser):
     operand0 = p.operand0
     operand1 = p.operand1
     operand2 = p.operand2
-#    return lambda m: print(type(operand0(m)))
-#    return lambda m: operand1(m) <= operand0(m) <= operand2(m)
     return lambda m: operand1(m) <= operand0(m) <= operand2(m)
 
   @_('operand IN "(" in_list ")"')
@@ -177,7 +175,7 @@ class CeParser(Parser):
   @_('SIZE "(" path ")"')
   def operand(self, p):
     path = p.path
-    return lambda m: len(path(m)) if isinstance(path(m), (str, set, dict, bytearray, bytes)) else -1
+    return lambda m: len(path(m)) if isinstance(path(m), (str, set, dict, bytearray, bytes, list)) else -1
 
   @_('in_list "," operand')
   def in_list(self, p):
