@@ -43,14 +43,14 @@ class CeParser(Parser):
     self._expression_attribute_values = {}
 
   def evaluate(self, expression, item):
-    return parse(expression)(item)
+    return self.parse(expression)(item)
 
   def flush_cache(self):
     _expression_cache = {}
 
   def parse(self, expression):
     if expression not in self._expression_cache:
-      self._expression_cache[expression] = super.parse(CeLexer().tokenize(expression))
+      self._expression_cache[expression] = super().parse(CeLexer().tokenize(expression))
     return self._expression_cache[expression]
 
   # Get the token list from the lexer (required)
@@ -149,7 +149,7 @@ class CeParser(Parser):
   def function(self, p):
     path = p.path
     return lambda m: path(m) is not None
-  
+
   @_('ATRIBUTE_NOT_EXISTS "(" path ")"')
   def function(self, p):
     path = p.path
@@ -159,7 +159,7 @@ class CeParser(Parser):
   def function(self, p):
     path = p.path
     operand = p.operand
-    return lambda m: operand(m) in _TYPE_SERIALIZER(path(m))
+    return lambda m: list(_TYPE_SERIALIZER.serialize(path(m)))[0] == operand(m)
 
   @_('BEGINS_WITH "(" path "," operand ")"')
   def function(self, p):
@@ -187,7 +187,7 @@ class CeParser(Parser):
   def in_list(self, p):
     in_list = p.in_list
     operand = p.operand
-    return lambda m: in_list.append(operand(m))
+    return lambda m: in_list(m).append(operand(m))
 
   @_('operand "," operand')
   def in_list(self, p):
