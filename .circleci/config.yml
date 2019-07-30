@@ -7,8 +7,9 @@ jobs:
       - checkout
       - run: sudo apt-get -y install pandoc
       - run: sudo pip install pypandoc
-      - run: python setup.py sdist bdist_wheel
+      - run: python setup.py install
       - run: python dynamodb_ce/tests/runtest.py
+      - run: python setup.py sdist bdist_wheel
       - persist_to_workspace:
           root: dist
           paths:
