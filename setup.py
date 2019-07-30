@@ -1,4 +1,4 @@
-import setuptools 
+import setuptools
 import io
 
 setuptools.setup(
@@ -11,7 +11,7 @@ setuptools.setup(
     license='Apache 2.0',
     long_description=io.open('README.rst', encoding='utf-8').read(),
     packages = ['dynamodb_ce'],
-    install_requires = [ 'sly' ],
+    install_requires = [ 'sly', 'boto3' ],
     classifiers = [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
