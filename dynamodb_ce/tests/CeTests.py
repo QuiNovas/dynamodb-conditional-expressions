@@ -1,7 +1,7 @@
 #!python3.7
 
-from ceparser import CeParser
-from celexer import CeLexer
+from dynamodb_ce import CeParser
+from dynamodb_ce import CeLexer
 import inspect
 from pprint import pprint
 from decimal import *
