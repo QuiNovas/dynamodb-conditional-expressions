@@ -112,7 +112,7 @@ class CeParser(Parser):
     operand2 = p.operand2
     return lambda m: operand1(m) <= operand0(m) <= operand2(m)
 
-  @_('operand IN in_list')
+  @_('operand IN "(" in_list ")"')
   def condition(self, p):
     operand = p.operand
     in_list = p.in_list
@@ -177,11 +177,6 @@ class CeParser(Parser):
   def function(self, p):
     path = p.path
     return lambda m: len(path(m)) if isinstance(path(m), (str, set, dict, bytearray, bytes)) else -1
-
-  @_('"(" in_list ")"')
-  def in_list(self, p):
-    in_list = p.in_list
-    return lambda m: in_list(m)
 
   @_('in_list "," operand')
   def in_list(self, p):
