@@ -182,7 +182,7 @@ class CeParser(Parser):
   def in_list(self, p):
     in_list = p.in_list
     operand = p.operand
-    return lambda m: in_list(m).append(operand(m))
+    return lambda m: [*in_list(m), operand(m)]
 
   @_('operand "," operand')
   def in_list(self, p):
