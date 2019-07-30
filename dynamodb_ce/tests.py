@@ -4,6 +4,8 @@ from ceparser import CeParser
 from celexer import CeLexer
 import inspect
 from pprint import pprint
+from decimal import *
+import base64
 
 class TestUnit(object):
     lexer = CeLexer()
@@ -172,6 +174,10 @@ class between(TestUnit):
             ":number2 BETWEEN #path.numberList[0] AND #path.numberList[2]", # CASE: int(value) BETWEEN int(path) AND int(path)
             ":number2 BETWEEN #path.numberList[0] AND :number3", # CASE: int(value) BETWEEN int(path) AND int(value)
             ":number2 BETWEEN :number1 AND #path.numberList[2]", # CASE: int(value) BETWEEN int(value) AND int(path)
+            "size(#path.number2) BETWEEN size(#path.number1) AND size(#path.number3)",
+            "size(#path.number2) BETWEEN size(#path.number1) AND :number3",
+            "size(#path.number2) BETWEEN #path.number1 AND #path.number3",
+            #"size(#path.number2) BETWEEN #path.number1 AND :number3"
         ]
 
 class inList(TestUnit):
@@ -203,7 +209,7 @@ class attribute_not_exists(TestUnit):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         self.parser._expression_attribute_names = {"#path": "body", "#notThere": "not_there"}
         self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, "map": {"M": {"mapkey": "mapval"}}}
-        self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3], "map": {"mapkey": "mapvalue"}}}
+        self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1, 2, 3], "map": {"mapkey": "mapvalue"}}}
         self.expressions = [
             "attribute_not_exists(#path.#notThere)"
         ]
@@ -216,20 +222,8 @@ class attribute_type(TestUnit):
                                                     	':string1': {
                                                     		'S': "a"
                                                     	},
-                                                    	':string2': {
-                                                    		'S': "b"
-                                                    	},
-                                                    	':string3': {
-                                                    		'S': "c"
-                                                    	},
                                                     	':number1': {
                                                     		'N': 1
-                                                    	},
-                                                    	':number2': {
-                                                    		'N': 2
-                                                    	},
-                                                    	':number3': {
-                                                    		'N': 3
                                                     	},
                                                         ':stringType': {
                                                             'S': 'S'
@@ -237,11 +231,29 @@ class attribute_type(TestUnit):
                                                         ':numberType': {
                                                             'S': 'N'
                                                         },
+                                                        ':binaryType':{
+                                                            'S': 'B'
+                                                        },
+                                                        ':boolType':{
+                                                            'S': 'BOOL'
+                                                        },
+                                                        ':nullType':{
+                                                            'S': 'NULL'
+                                                        },
                                                         ':mapType': {
                                                             'S': 'M'
                                                         },
                                                         ":listType": {
                                                             'S': 'L'
+                                                        },
+                                                        ":numberSetType": {
+                                                            'S': 'NS'
+                                                        },
+                                                        ":stringSetType": {
+                                                            'S': 'SS'
+                                                        },
+                                                        ':binarySetType':{
+                                                            'S': 'BS'
                                                         },
                                                     	"map": {
                                                     		"M": {
@@ -251,25 +263,102 @@ class attribute_type(TestUnit):
                                                     }
         self.message = {
                         	"body": {
-                        		"number1": 1,
-                        		"number2": 2,
-                        		"number3": 3,
-                        		"string1": "a",
-                        		"string2": "b",
-                        		"string3": "c",
-                        		"numberList": [1, 2, 3],
+                        		"number": 1,
+                        		"string": "a",
+                                "binary": bytes("dGhpcyB0ZXh0IGlzIGJhc2U2NC1lbmNvZGVk", "utf-8"),
+                                "bool": False,
+                                "null": None,
+                                "binarySet": {bytes("Zm9v", "utf-8"), bytes("YmFy", "utf-8"), bytes("YmF6", "utf-8")},
+                        		"numberSet": {Decimal("1.1"), Decimal("2.2"), Decimal("3.3")},
+                        		"stringSet": {"foo", "bar", "baz"},
+                                "list": ["foo", "bar", "baz"],
                         		"map": {
                         			"mapkey": "mapvalue"
                         		}
                         	}
                         }
         self.expressions = [
-            "attribute_type( #path.string1, :stringType )",
-            "attribute_type( #path.number1, :numberType )",
+            "attribute_type( #path.string, :stringType )",
+            "attribute_type( #path.number, :numberType )",
             "attribute_type( #path.map, :mapType )",
-            "attribute_type( #path.numberList, :listType )",
+            "attribute_type( #path.numberSet, :numberSetType )",
+            "attribute_type( #path.stringSet, :stringSetType )",
+            "attribute_type( #path.binarySet, :binarySetType )",
+            "attribute_type( #path.list, :listType )",
+            "attribute_type( #path.bool, :boolType )",
+            "attribute_type( #path.null, :nullType )",
         ]
 
+class begins_with(TestUnit):
+    def __init__(self):
+        print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
+        self.parser._expression_attribute_names = {"#path": "body", "#notThere": "not_there"}
+        self.parser._expression_attribute_values = {':word1': {'S': "alpha"}, ':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":mapval": {"S": "mapval"}}
+        self.message = {"body": {"word1": "alpha", "number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3], "map": {"mapkey": "mapvalue"}}}
+        self.expressions = [
+            "begins_with(#path.word1, :string1)",
+            "begins_with(#path.word1, :word1)",
+            "begins_with(#path.map.mapkey, :mapval)"
+        ]
+
+class size(TestUnit):
+    def __init__(self):
+        print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
+        self.parser._expression_attribute_names = {"#path": "body"}
+        self.parser._expression_attribute_values = {':wordlen': {'N': 3}, ':binarylen': {'N': 36}, ':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":mapval": {"S": "mapval"}}
+        self.message = {
+                        	"body": {
+                        		"number": 1,
+                        		"word": "foo",
+                                "binary": bytes("dGhpcyB0ZXh0IGlzIGJhc2U2NC1lbmNvZGVk", "utf-8"),
+                                "bool": False,
+                                "null": None,
+                                "binarySet": {bytes("Zm9v", "utf-8"), bytes("YmFy", "utf-8"), bytes("YmF6", "utf-8")},
+                        		"numberSet": {Decimal("1.1"), Decimal("2.2"), Decimal("3.3")},
+                        		"stringSet": {"foo", "bar", "baz"},
+                                "list": ["foo", "bar", "baz"],
+                        		"map": {
+                        			"mapkey": "map",
+                                    "secondKey": "secondValue",
+                                    "thirdKey": {"key1": "val2", "key2": "val2"}
+                        		}
+                        	}
+                        }
+
+        self.expressions = [
+            "size(#path.word) = :wordlen",
+            "size(#path.binary) = :binarylen",
+            "size(#path.binarySet) = :number3",
+            "size(#path.numberSet) = :number3",
+            "size(#path.stringSet) = :number3",
+            "size(#path.list) = :number3",
+            "size(#path.map) = :number3",
+            "size(#path.map.thirdKey) = :number2",
+            "size(#path.map.mapkey) = :number3"
+        ]
+
+class notTest(TestUnit):
+    def __init__(self):
+        print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
+        self.message = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
+        self.parser._expression_attribute_names = {"#path": "body"}
+        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
+        self.expressions = [
+                    "NOT #path.string2 < #path.string1", # CASE: path > path
+                    "NOT :number2 < :number1", # CASE: int(value) > int(value)
+                    "NOT :string2 < :string1", # CASE: str(value) > str(value)
+                    "NOT #path.number2 < :number1", # CASE: path > int(value)
+                    "NOT #path.string2 < :string1", # CASE: path > str(value)
+                    "NOT :number2 < #path.number1",  # CASE: int(value) > path
+                    "NOT :string2 < #path.string1",
+                    "NOT size(#path.string1) > size(#path.string2)",
+                    "NOT size(#path.string1) > :number2",
+                    "NOT :number1 > size(#path.string2)"
+                ]
+
+
+
+"""
 test = greaterThan()
 test.run()
 
@@ -287,10 +376,10 @@ test.run()
 
 test = notEqual()
 test.run()
-
+"""
 test = between()
 test.run()
-
+"""
 test = inList()
 test.run()
 
@@ -301,4 +390,13 @@ test = attribute_not_exists()
 test.run()
 
 test = attribute_type()
+test.run()
+
+test = begins_with()
+test.run()
+
+test = size()
+test.run()
+"""
+test = notTest()
 test.run()

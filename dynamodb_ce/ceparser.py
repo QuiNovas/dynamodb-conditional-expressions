@@ -69,55 +69,75 @@ class CeParser(Parser):
 
   # Grammar rules and actions
   @_('operand EQ operand',
-    'function EQ operand')
+    'function EQ operand',
+    'function EQ function',
+    'operand EQ function')
   def condition(self, p):
     operand0 = p[0]
     operand1 = p[2]
     return lambda m: operand0(m) == operand1(m)
 
   @_('operand NE operand',
-    'function NE operand')
+    'function NE operand',
+    'function NE function',
+    'operand NE function')
   def condition(self, p):
     operand0 = p[0]
     operand1 = p[2]
     return lambda m: operand0(m) != operand1(m)
 
   @_('operand GT operand',
-    'function GT operand')
+    'function GT operand',
+    'function GT function',
+    'operand GT function')
   def condition(self, p):
     operand0 = p[0]
     operand1 = p[2]
     return lambda m: operand0(m) > operand1(m)
 
   @_('operand GTE operand',
-    'function GTE operand')
+    'function GTE operand',
+    'function GTE function',
+    'operand GTE function')
   def condition(self, p):
     operand0 = p[0]
     operand1 = p[2]
     return lambda m: operand0(m) >= operand1(m)
 
   @_('operand LT operand',
-    'function LT operand')
+    'function LT operand',
+    'function LT function',
+    'operand LT function')
   def condition(self, p):
     operand0 = p[0]
     operand1 = p[2]
     return lambda m: operand0(m) < operand1(m)
 
   @_('operand LTE operand',
-    'function LTE operand')
+    'function LTE operand',
+    'function LTE function',
+    'operand LTE function')
   def condition(self, p):
     operand0 = p[0]
     operand1 = p[2]
     return lambda m: operand0(m) <= operand1(m)
 
-  @_('operand BETWEEN operand AND operand')
+  @_('operand BETWEEN operand AND operand',
+    'operand BETWEEN operand AND function',
+    'operand BETWEEN function AND function',
+    'operand BETWEEN function AND operand',
+    'function BETWEEN operand AND operand',
+    'function BETWEEN operand AND function',
+    'function BETWEEN function AND function',
+    'function BETWEEN function AND operand')
   def condition(self, p):
-    operand0 = p.operand0
-    operand1 = p.operand1
-    operand2 = p.operand2
+    operand0 = p[0]
+    operand1 = p[2]
+    operand2 = p[4]
     return lambda m: operand1(m) <= operand0(m) <= operand2(m)
 
-  @_('operand IN "(" in_list ")"')
+  @_('operand IN "(" in_list ")"',
+    'function IN "(" in_list ")"')
   def condition(self, p):
     operand = p.operand
     in_list = p.in_list
@@ -183,13 +203,17 @@ class CeParser(Parser):
     path = p.path
     return lambda m: len(path(m)) if isinstance(path(m), (str, set, dict, bytearray, bytes, list)) else -1
 
-  @_('in_list "," operand')
+  @_('in_list "," operand',
+    'in_list "," function')
   def in_list(self, p):
     in_list = p.in_list
     operand = p.operand
     return lambda m: [*in_list(m), operand(m)]
 
-  @_('operand "," operand')
+  @_('operand "," operand',
+    'function "," function',
+    'function "," operand',
+    'operand "," function')
   def in_list(self, p):
     operand0 = p.operand0
     operand1 = p.operand1
