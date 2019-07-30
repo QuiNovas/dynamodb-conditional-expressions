@@ -1,7 +1,6 @@
 from sly import Lexer
 
 class CeLexer(Lexer):
-  
   # Set of token names.
   tokens = {
     NAME,
