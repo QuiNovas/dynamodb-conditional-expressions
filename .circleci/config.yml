@@ -31,6 +31,6 @@ workflows:
           filters:
             branches:
               only:
-                - unit_tests
+                - master
           requires:
             - build
