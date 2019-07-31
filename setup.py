@@ -3,7 +3,7 @@ import io
 
 setuptools.setup(
     name='dynamodb-ce',
-    version='0.0.3',
+    version='0.0.4',
     description='A parser for DynamoDB conditional expressions that returns a truthy function',
     author='Joseph Wortmann',
     author_email='jwortmann@quinovas.com',
