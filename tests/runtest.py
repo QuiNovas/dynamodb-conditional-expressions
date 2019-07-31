@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.7
 import sys
 from os.path import dirname, join, abspath
-sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from CeTests import *
 
 test = greaterThan()
