@@ -1,14 +1,11 @@
-#!python3.7
-
 from dynamodb_ce import CeParser
-from dynamodb_ce import CeLexer
 import inspect
 from pprint import pprint
 from decimal import *
 import sys
 
 class TestUnit(object):
-    lexer = CeLexer()
+    #lexer = CeLexer()
     parser = CeParser()
 
     def getResult(self, expr, result):
