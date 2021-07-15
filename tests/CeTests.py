@@ -408,5 +408,5 @@ class precedence(TestUnit):
                     "(:number1 > :number2 OR :number2 < :number3 AND size(#path.string1) = :number1) OR (:number2 > :number1 OR :number1 < :number2 AND :number1 > :number2) AND (:number1 > :number2)",
                     "NOT (:number1 > :number2 OR :number2 < :number3 AND size(#path.string1) = :number2) OR (:number2 > :number1 OR  :number3 > :number2 AND :number1 > :number2) AND :number1 > :number1",
                     "((:number1 > :number2 OR :number2 < :number3 AND size(#path.string1) = :number2) OR (:number2 > :number1 OR  :number3 > :number2 AND :number1 > :number2)) AND (:number1 = :number1 AND :number2 > :number1)",
-                    "NOT (:number1 < :number2 OR :number3 < :number2) AND :number2 < :number1"
+                    "NOT (:number2 < :number1 OR :number3 < :number2) AND :number2 > :number1"
                 ]
