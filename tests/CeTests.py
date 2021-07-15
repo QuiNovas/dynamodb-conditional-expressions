@@ -52,15 +52,15 @@ class greaterThan(TestUnit):
                     ":number2 > #path.number1",  # CASE: int(value) > path
                     ":string2 > #path.string1"
                 ]
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
 
 class greaterThanOrEqual(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         super(TestUnit, self).__init__()
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
         self.message = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
         self.expressions = [
             "#path.string2 >= #path.string1", # CASE: path >= path (greater)
@@ -84,8 +84,8 @@ class lessThanOrEqual(TestUnit):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         super(TestUnit, self).__init__()
         self.message = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
         self.expressions = [
             "#path.string1 <= #path.string2", # CASE: path <= path (greater)
             "#path.string1 <= #path.string1", # CASE: path <= path (equal)
@@ -108,8 +108,8 @@ class lessThan(TestUnit):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         super(TestUnit, self).__init__()
         self.message = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
         self.expressions = [
             "#path.string1 < #path.string2", # CASE: path < path
             ":number1 < :number2", # CASE: int(value) < int(value)
@@ -125,8 +125,8 @@ class equal(TestUnit):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         super(TestUnit, self).__init__()
         self.message = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
         self.expressions = [
             "#path.string1 = #path.string1", # CASE: path < path
             ":number1 = :number1", # CASE: int(value) < int(value)
@@ -142,8 +142,8 @@ class notEqual(TestUnit):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         super(TestUnit, self).__init__()
         self.message = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
         self.expressions = [
             "#path.string1 <> #path.string2", # CASE: path <> path
             ":number1 <> :number2", # CASE: int(value) <> int(value)
@@ -157,8 +157,8 @@ class notEqual(TestUnit):
 class between(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}}
         self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "string2char": "aa", "string3char": "aaa", "numberList": [1,2,3]}}
         self.expressions = [
             "#path.numberList[1] BETWEEN #path.numberList[0] AND #path.numberList[2]", # CASE: int(path) BETWEEN int(path) AND int(path)
@@ -186,8 +186,8 @@ class between(TestUnit):
 class inList(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}}
         self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3]}}
         self.expressions = [
             "#path.string1 IN (:string2, :string1, :string3)"
@@ -196,8 +196,8 @@ class inList(TestUnit):
 class attribute_exists(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        self.parser._expression_attribute_names = {"#path": "body", "#string": "string1"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, "map": {"M": {"mapkey": "mapval"}}}
+        self.parser.expression_attribute_names = {"#path": "body", "#string": "string1"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, "map": {"M": {"mapkey": "mapval"}}}
         self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3], "map": {"mapkey": "mapvalue"}}}
         self.expressions = [
             "attribute_exists(#path.string1)",
@@ -210,8 +210,8 @@ class attribute_exists(TestUnit):
 class attribute_not_exists(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        self.parser._expression_attribute_names = {"#path": "body", "#notThere": "not_there"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, "map": {"M": {"mapkey": "mapval"}}}
+        self.parser.expression_attribute_names = {"#path": "body", "#notThere": "not_there"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, "map": {"M": {"mapkey": "mapval"}}}
         self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1, 2, 3], "map": {"mapkey": "mapvalue"}}}
         self.expressions = [
             "attribute_not_exists(#path.#notThere)"
@@ -220,8 +220,8 @@ class attribute_not_exists(TestUnit):
 class attribute_type(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {
                                                     	':string1': {
                                                     		'S': "a"
                                                     	},
@@ -295,8 +295,8 @@ class attribute_type(TestUnit):
 class begins_with(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        self.parser._expression_attribute_names = {"#path": "body", "#notThere": "not_there"}
-        self.parser._expression_attribute_values = {':word1': {'S': "alpha"}, ':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":mapval": {"S": "mapval"}}
+        self.parser.expression_attribute_names = {"#path": "body", "#notThere": "not_there"}
+        self.parser.expression_attribute_values = {':word1': {'S': "alpha"}, ':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":mapval": {"S": "mapval"}}
         self.message = {"body": {"word1": "alpha", "number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string3": "c", "numberList": [1,2,3], "map": {"mapkey": "mapvalue"}}}
         self.expressions = [
             "begins_with(#path.word1, :string1)",
@@ -307,8 +307,8 @@ class begins_with(TestUnit):
 class size(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':wordlen': {'N': 3}, ':binarylen': {'N': 36}, ':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":mapval": {"S": "mapval"}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':wordlen': {'N': 3}, ':binarylen': {'N': 36}, ':string1': {'S': "a"}, ':string2': {'S': "b"}, ':string3': {'S': "c"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":mapval": {"S": "mapval"}}
         self.message = {
                         	"body": {
                         		"number": 1,
@@ -344,8 +344,8 @@ class Not(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         self.message = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
         self.expressions = [
                     "NOT #path.string2 < #path.string1", # CASE: path > path
                     "NOT :number2 < :number1", # CASE: int(value) > int(value)
@@ -365,8 +365,8 @@ class And(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string1char": "a", "string2char": "aa"}}
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":stringtype": {'S': 'S'}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":stringtype": {'S': 'S'}}
         self.expressions = [
                     "#path.string2 > #path.string1 AND :string1 < :string2",
                     ":number2 > :number1 AND :number1 < #path.number2",
@@ -382,8 +382,8 @@ class Or(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string1char": "a", "string2char": "aa"}}
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":stringtype": {'S': 'S'}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":stringtype": {'S': 'S'}}
         self.expressions = [
                     "#path.string2 > #path.string1 OR :string1 > :string2",
                     ":number2 > :number1 OR :number1 > #path.number2",
@@ -399,8 +399,8 @@ class precedence(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         self.message = {"body": {"number1": 1, "number2": 2, "number3": 3, "string1": "a", "string2": "b", "string1char": "a", "string2char": "aa"}}
-        self.parser._expression_attribute_names = {"#path": "body"}
-        self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":stringtype": {'S': 'S'}}
+        self.parser.expression_attribute_names = {"#path": "body"}
+        self.parser.expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}, ':number3': {'N': 3}, ":stringtype": {'S': 'S'}}
         self.expressions = [
                     ":number2 > :number1 OR :number1 < :number2 AND :number1 > :number2",
                     ":number2 > :number1 OR :number1 < :number2 AND :number1 > :number2 AND :number3 < :number2",
