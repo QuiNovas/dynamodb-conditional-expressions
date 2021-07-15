@@ -1,10 +1,10 @@
 __all__ = ["CeParser"]
 
-import json
 from copy import deepcopy
 from decimal import Decimal
 from typing import Callable, Dict, Set, Union
 
+import simplejson as json
 from boto3.dynamodb.types import (
     BINARY,
     BINARY_SET,
@@ -27,11 +27,8 @@ from .celexer import CeLexer
 
 class CeTypeDeserializer(TypeDeserializer):
     def deserialize(self, value):
-        if (
-            value
-            and isinstance(value, dict)
-            and list(value)[0]
-            in (
+        if value and isinstance(value, dict):
+            if list(value)[0] in (
                 BINARY,
                 BINARY_SET,
                 BOOLEAN,
@@ -42,9 +39,10 @@ class CeTypeDeserializer(TypeDeserializer):
                 NUMBER_SET,
                 STRING,
                 STRING_SET,
-            )
-        ):
-            value = super().deserialize(value)
+            ):
+                value = super().deserialize(value)
+            else:
+                value = {k: self.deserialize(v) for k, v in value.items()}
         return value.value if isinstance(value, Binary) else value
 
 
@@ -68,19 +66,19 @@ class CeParser(Parser):
         expression_attribute_names: ExpressionAttributeNames = None,
         expression_attribute_values: ExpressionAttributeValues = None,
     ):
-        self._expression_attribute_names: ExpressionAttributeNames = (
-            expression_attribute_names or dict()
-        )
-        self._expression_attribute_values: ExpressionAttributeValues = (
-            expression_attribute_values or dict()
-        )
+        self._expression_attribute_names: ExpressionAttributeNames = dict()
+        self._expression_attribute_values: ExpressionAttributeValues = dict()
+        self.expression_attribute_names = expression_attribute_names or dict()
+        self.expression_attribute_values = expression_attribute_values or dict()
         self._set_expression_attribute_json()
         super().__init__()
 
     def _set_expression_attribute_json(self) -> None:
         self._expression_attribute_json = json.dumps(
-            self._expression_attribute_names, separators=(",", ":")
-        ) + json.dumps(self._expression_attribute_values, separators=(",", ":"))
+            self._expression_attribute_names, separators=(",", ":"), use_decimal=True
+        ) + json.dumps(
+            self._expression_attribute_values, separators=(",", ":"), use_decimal=True
+        )
 
     @property
     def expression_attribute_names(self) -> ExpressionAttributeNames:
@@ -109,7 +107,7 @@ class CeParser(Parser):
         self, expression_attribute_values: ExpressionAttributeValues
     ) -> None:
         self._expression_attribute_values: ExpressionAttributeValues = (
-            deepcopy(expression_attribute_values) or dict()
+            _TYPE_DESERIALIZER.deserialize(expression_attribute_values) or dict()
         )
         self._set_expression_attribute_json()
 
@@ -128,9 +126,15 @@ class CeParser(Parser):
     def parse(self, expression: str) -> Callable[[DynamoItem], bool]:
         expression_hash = hash(expression + self._expression_attribute_json)
         if expression_hash not in self._expression_cache:
-            self._expression_cache[expression_hash] = super().parse(
+            compiled_expression: Callable[[DynamoItem], bool] = super().parse(
                 CeLexer().tokenize(expression)
             )
+
+            def truthy(item: DynamoItem) -> bool:
+                item = _TYPE_DESERIALIZER.deserialize(item)
+                return compiled_expression(item)
+
+            self._expression_cache[expression_hash] = lambda m: truthy(m)
         return self._expression_cache[expression_hash]
 
     # Get the token list from the lexer (required)
@@ -289,9 +293,7 @@ class CeParser(Parser):
     def operand(self, p):
         VALUE = p.VALUE
         expression_attribute_values = self._expression_attribute_values
-        return lambda m: _TYPE_DESERIALIZER.deserialize(
-            expression_attribute_values.get(VALUE)
-        )
+        return lambda m: expression_attribute_values.get(VALUE)
 
     @_('path "." NAME')
     def path(self, p):
@@ -323,12 +325,10 @@ class CeParser(Parser):
     @_("NAME")
     def path(self, p):
         NAME = p.NAME
-        return lambda m: _TYPE_DESERIALIZER.deserialize(m.get(NAME))
+        return lambda m: m.get(NAME)
 
     @_("NAME_REF")
     def path(self, p):
         NAME_REF = p.NAME_REF
         expression_attribute_names = self._expression_attribute_names
-        return lambda m: _TYPE_DESERIALIZER.deserialize(
-            m.get(expression_attribute_names.get(NAME_REF))
-        )
+        return lambda m: m.get(expression_attribute_names.get(NAME_REF))
