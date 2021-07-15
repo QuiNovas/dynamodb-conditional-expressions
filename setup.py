@@ -10,6 +10,7 @@ setuptools.setup(
     url="https://github.com/QuiNovas/dynamodb-conditional-expressions",
     license="Apache 2.0",
     long_description=io.open("README.md", encoding="utf-8").read(),
+    long_description_content_type="text/markdown",
     packages=["dynamodb_ce"],
     install_requires=["simplejson", "sly", "boto3"],
     classifiers=[
