@@ -1,11 +1,13 @@
-from dynamodb_ce import CeParser
 import inspect
-from pprint import pprint
-from decimal import *
 import sys
+from decimal import *
+from pprint import pprint
+
+from boto3.dynamodb.types import TypeSerializer
+from dynamodb_ce import CeParser
+
 
 class TestUnit(object):
-    #lexer = CeLexer()
     parser = CeParser()
 
     def getResult(self, expr, result):
@@ -22,10 +24,13 @@ class TestUnit(object):
             return "\033[1;31;40m " + testUnit + " " + result + "at case -> " + expr + " \033[01;37;40m"
 
     def run(self):
+        serializer = TypeSerializer()
         for expr in self.expressions:
             try:
                 result = self.getResult(expr, self.parser.evaluate(expr, self.message))
-                print(result)
+                print(f"dict: {result}")
+                result = self.getResult(expr, self.parser.evaluate(expr, serializer.serialize(self.message)["M"]))
+                print(f"ddb-dict: {result}")
             except Exception as e:
                 result = self.getResult(expr, False)
                 print(result)
@@ -54,7 +59,6 @@ class greaterThanOrEqual(TestUnit):
     def __init__(self):
         print(" \033[01;37;40m \n Starting test for " + inspect.stack()[1][4][0].split('.')[0].split('=')[-1])
         super(TestUnit, self).__init__()
-        self.message = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
         self.parser._expression_attribute_names = {"#path": "body"}
         self.parser._expression_attribute_values = {':string1': {'S': "a"}, ':string2': {'S': "b"}, ':number1': {'N': 1}, ':number2': {'N': 2}}
         self.message = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
