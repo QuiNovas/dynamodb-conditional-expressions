@@ -15,7 +15,7 @@ Setting up the parser requires setting expression attribute names and values, ju
 when calling DynamoDB. Expression attribute values can be represented either using Python types or DynamoDB
 types.
 
-Compilation is done once per (expression, attribute names, attribute values) tuple and cached.
+Compilation is done once per (expression, attribute names, attribute values) tuple and cached. The truthy function that is the result of the compilation is designed to be _extremely_ fast. 
 
 Lexing and parsing courtesy of [SLY](https://sly.readthedocs.io/en/latest/index.html).
 
