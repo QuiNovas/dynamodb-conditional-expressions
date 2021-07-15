@@ -17,6 +17,8 @@ types.
 
 Compilation is done once per (expression, attribute names, attribute values) tuple and cached.
 
+Lexing and parsing courtesy of [SLY](https://sly.readthedocs.io/en/latest/index.html).
+
 ### Usage
 
 #### Using DynamoDB types:
