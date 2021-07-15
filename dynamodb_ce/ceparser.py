@@ -136,7 +136,16 @@ class CeParser(Parser):
     # Get the token list from the lexer (required)
     tokens = CeLexer.tokens
 
-    precedence = (("left", OR), ("left", AND), ("right", NOT))
+    precedence = (
+        ("left", OR),
+        ("left", AND),
+        ("right", NOT),
+        ("right", PARENS),
+        ("left", ATTRIBUTE_EXISTS, ATTRIBUTE_NOT_EXISTS, BEGINS_WITH, CONTAINS),
+        ("left", BETWEEN),
+        ("left", IN),
+        ("left", EQ, NE, LT, LTE, GT, GTE),
+    )
 
     # Grammar rules and actions
     @_("operand EQ operand")
@@ -210,7 +219,7 @@ class CeParser(Parser):
         condition = p.condition
         return lambda m: not condition(m)
 
-    @_('"(" condition ")"')
+    @_('"(" condition ")" %prec PARENS')
     def condition(self, p):
         condition = p.condition
         return lambda m: condition(m)
