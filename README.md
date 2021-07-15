@@ -42,3 +42,16 @@ parser = CeParser(
 item = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
 parser.evaluate("#path.string2 > #path.string1", item)
 ```
+
+#### Using the parsed (compiled) result directly
+```python
+from dynamodb_ce import CeParser
+
+parser = CeParser(
+    expression_attribute_names={"#path": "body"},
+    expression_attribute_values={':string1': "a", ':string2': "b", ':number1': 1, ':number2': 2}
+)
+item = {"body": {"number1": 1, "number2": 2, "string1": "a", "string2": "b"}}
+truthy = parser.parse("#path.string2 > #path.string1")
+truthy(item)
+```
